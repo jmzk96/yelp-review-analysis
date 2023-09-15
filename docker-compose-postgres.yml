@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres
+    restart: always
+
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=docker_postgres
+      - POSTGRES_PASSWORD=postgres
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+
+volumes:
+  db-data:
+    driver: local

@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  dash:
+    build:
+      context: .
+      dockerfile: DOCKERFILE.dash
+    container_name: dash_app_info
+    volumes:
+      - .:/app
+    ports:
+      - '80:8050'
+    env_file:
+      - .env.prod

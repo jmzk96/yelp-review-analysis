@@ -1,0 +1,36 @@
+image: 'python:3.7'
+
+before_script:
+  - python --version
+  - pip install -r requirements.txt
+
+stages:
+  - Static Analysis
+  - Test
+
+Checking mypy:
+  stage: Static Analysis
+  script:
+    - mypy src
+
+Checking flake8:
+  stage: Static Analysis
+  script:
+    - flake8 --max-line-length=120 src
+
+Checking pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - pylint -d C0301,C0114,C0116,R0903,R0801 src
+
+Pytest and coverage:
+  stage: Test
+  script:
+    - pytest --cov=src --junitxml=report.xml
+    - coverage-badge
+  coverage: '/TOTAL.+?(\d+)%/'
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml

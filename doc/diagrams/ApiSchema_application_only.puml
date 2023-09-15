@@ -1,0 +1,53 @@
+@startuml ApiSchema_app_only
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome
+
+!include DEVICONS/linux.puml
+!include DEVICONS/python.puml
+!include DEVICONS/postgresql.puml
+!include DEVICONS/aptana.puml
+!include DEVICONS/html5.puml
+!include DEVICONS/database.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/dashboard.puml
+!include FONTAWESOME/area_chart.puml
+!include FONTAWESOME/flask.puml
+!include FONTAWESOME/code.puml
+
+skinparam backgroundColor #fff
+
+LAYOUT_WITH_LEGEND()
+Container(config, "Configuration", ".env", "Information for database connection, secrets ...", "aptana")
+
+Container(application, "Application", "Python", "The main business logic to serve data", "python")
+Container_Ext(plotly, "Plotly", "Plotly", "Framework for Python to generate interactive Graphs", "area_chart")
+Container_Ext(dash, "Dash", "Dash", "Framework to build interactive, dashboard like applications", "dashboard")
+Container_Ext(flask, "Flask", "Flask/Python", "Framework for Python to Handle Routing", "flask")
+Container(webapp, "Web App", "HTML", "Interface for users to interact with", "html5")
+
+Person(user, "Users", "Want to have insight of all the data and see nice plots", users)
+
+Container(dbhandler, "Database Handler", "Python", "Class / Package to handle all SQL operations", "python")
+Container_Ext(psycopg, "Psycopg2", "Python", "Framework to interact with postgres", "python")
+ContainerDb(db, "Database", "Postgresql", "Holds business and weather data", "postgresql")
+
+
+Rel_D(dbhandler, psycopg, "Uses")
+Rel_L(psycopg, db, "Handles SQL")
+Rel(config, dbhandler, "passes")
+
+Rel_R(user, webapp, "Uses")
+
+Rel(application, dbhandler, "Uses")
+
+Rel(application, plotly, "Uses")
+Rel(application, flask, "Uses")
+Rel(application, dash, "Uses")
+
+Rel(dash, webapp, "creates")
+Rel(plotly, webapp, "creates")
+Rel(flask, webapp, "creates")
+
+@enduml

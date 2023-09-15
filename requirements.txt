@@ -1,0 +1,14 @@
+autopep8==1.5.4
+coverage-badge==1.0.1
+dash==1.18.1
+flake8==3.8.4
+matplotlib==3.3.3
+mypy==0.790
+pandas==1.1.4
+pip-chill==1.0.0
+psycopg2==2.8.6
+pylint==2.6.0
+pytest-cov==2.10.1
+python-dotenv==0.15.0
+sklearn==0.0
+spacy==2.3.5

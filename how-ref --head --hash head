@@ -1,0 +1,172 @@
+0dd23c2
+
+[1mdiff --git a/README.md b/README.md[m
+[1mindex a55a2be..c59cadb 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -8,6 +8,8 @@[m
+ <!-- TOC -->[m
+ [m
+ - [Project Synchro Info](#project-synchro-info)[m
+[32m+[m[32m- [Basic Information](#basic-information)[m
+[32m+[m[32m  - [Project Structure](#project-structure)[m
+ - [Setting up the Project](#setting-up-the-project)[m
+   - [How to Start](#how-to-start)[m
+   - [Linting](#linting)[m
+[36m@@ -15,7 +17,6 @@[m
+   - [Running Postgres with Docker](#running-postgres-with-docker)[m
+   - [Postgres on the VM](#postgres-on-the-vm)[m
+     - [Enabling Remote Access](#enabling-remote-access)[m
+[31m-    - [Postgres Credentials](#postgres-credentials)[m
+     - [Use .sql files](#use-sql-files)[m
+     - [Procedure with too Large Files](#procedure-with-too-large-files)[m
+   - [Environment Variables](#environment-variables)[m
+[36m@@ -26,14 +27,40 @@[m
+   - [Structure of the data](#structure-of-the-data)[m
+     - [Yelp Data](#yelp-data)[m
+     - [NOAA Climate Data](#noaa-climate-data)[m
+[31m-- [Project Information](#project-information)[m
+[32m+[m[32m- [Project App Information](#project-app-information)[m
+   - [Programm Schema](#programm-schema)[m
+   - [API Schema](#api-schema)[m
+[32m+[m[32m  - [Dash App Structure](#dash-app-structure)[m
+   - [Setting up the Dash App](#setting-up-the-dash-app)[m
+   - [Ressources for Dash/Plotly/Flask](#ressources-for-dashplotlyflask)[m
+ [m
+ <!-- /TOC -->[m
+ [m
+[32m+[m[32m# Basic Information[m
+[32m+[m
+[32m+[m[32mThis is the Semester Project of Group 3 from the Data Science Master synchronization module for Computer Science.[m
+[32m+[m[32mThe Idea was to use the [Yelp Dataset](https://www.yelp.com/dataset) combined with the [NOAA Weather Dataset](https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/) to investigate relations between weather and customer reviews.[m
+[32m+[m[32mThe precise goal was not defined, since in most DS projects the outcome ist not quite clear.[m
+[32m+[m[32mOur groups goal was to create an app for users to interact with, explore the data for the different states and city clusters and get insight into that data.[m
+[32m+[m[32mThe gained insights should help the user decide on their business model. This includes the kind of the business as well as geographical location and factors like price range and open time / span.[m
+[32m+[m
+[32m+[m[32m## Project Structure[m
+[32m+[m
+[32m+[m[32mThe project structure devides into different parts:[m
+[32m+[m
+[32m+[m[32m- `data_scripts` Notebooks and Python Scripts to do EDA and explore the default data / do some basic testing.[m
+[32m+[m[32m- `sql_setup` Shell Scripts and Python Scripts to read in the needed data into the sql Database. The Yelp Dataset needs to be downloaded via hand, since a consent is needed.[m
+[32m+[m[32m- `sql_cleanup` SQL and Python code to add features to the Database and clean up inconsistent data.[m
+[32m+[m[32m- `sql_optimization` SQL and Python code to add additional features and materialized views for querry optimization.[m
+[32m+[m[32m- `result_of_analysis` Notebooks for EDA of the final Database Data and to pre draft the plots for the app.[m
+[32m+[m[32m- `nlp` Script to build a NLP model of the reviews and apply it to the tips text-[m
+[32m+[m[32m- `test` Folder for test Scripts.[m
+[32m+[m[32m- `src` Folder for all application logic.[m
+[32m+[m[32m- `doc` Folder for diagrams, sql Schema, PowerDesigner Files.[m
+[32m+[m[32m- `index.py` Entrypoint of the app.[m
+[32m+[m[32m- `docker-compose.yml` Docker file to run the app via docker.[m
+[32m+[m[32m- `.env.example` Example .env file for the project. Use .env.prod. for docker and .env for the plain index.py.[m
+[32m+[m
+ # Setting up the Project[m
+ [m
+ ## How to Start[m
+[36m@@ -82,7 +109,7 @@[m [mDue to the current folder structure, all source code should be located in the `s[m
+ [m
+ ## Running Postgres with Docker[m
+ [m
+[31m-This repo contains a `docker-compose.yml` file to easily set up a Postgres database anywhere, as long as Docker (Windows) or also Docker-Compose (Linux) is installed. To set up the container and get it running just execute:[m
+[32m+[m[32mThis repo contains a `docker-compose-postgres.yml` file to easily set up a Postgres database anywhere, as long as Docker (Windows) or also Docker-Compose (Linux) is installed. To set up the container and get it running just execute:[m
+ [m
+ ```shell[m
+ docker-compose -f docker-compose-postgres.yml up[m
+[36m@@ -108,21 +135,12 @@[m [mThe VM provided is a CentOS GNU/Linux distribution. Here, yum is used as package[m
+ [m
+ First the postgres settings need to be changed. They can be found at : `/var/lib/pgsql/data/postgresql.conf` and `/var/lib/pgsql/data/pg_hba.conf`. In the first file, set `listen_addresses = '*'`. In the second file append the following line: `host all all 0.0.0.0/0 trust` or just add your specific ips if you dont want acced for everyone.[m
+ [m
+[31m-### Postgres Credentials[m
+[31m-[m
+[31m-Although it is usually not practicable to store credential data in your repo (use secrets / environment variables for) for the sace of the practise and simplicity, the credentials for the postgres default user are:[m
+[31m-[m
+[31m-```[m
+[31m-username: postgres[m
+[31m-password: sync3[m
+[31m-```[m
+[31m-[m
+ ### Use .sql files[m
+ [m
+[31m-To run / execute .sql files you simply have to run[m
+[32m+[m[32mTo run / execute .sql files you simply have to run:[m
+ [m
+ ```shell[m
+[31m-psql -U postgres -d docker_postgres -f /home/crebas.sql[m
+[32m+[m[32mpsql -U postgres -d docker_postgres -f /doc/basic_schema.sql[m
+ ```[m
+ [m
+ Where the flags are for:[m
+[36m@@ -131,9 +149,11 @@[m [mWhere the flags are for:[m
+ - **-d**: database to use[m
+ - **-f**: path to the sql file[m
+ [m
+[32m+[m[32mYou can also use the PgAdmin Interface and import the SQL files there to execute over the GUI.[m
+[32m+[m
+ ### Procedure with too Large Files[m
+ [m
+[31m-Some of the .json files are quite large (6 GB) and will probably not fit within one read into Python (the 6 GB file needed more than 24 GB RAM during the pd.read_csv procedure). One possibility is to split the JSON files on linux:[m
+[32m+[m[32mSome of the .json files are quite large (6 GB) and will probably not fit within one read into Python (the 6 GB file needed more than 24 GB RAM during the `pd.read_csv()` procedure). One possibility is to split the JSON files on linux:[m
+ [m
+ ```shell[m
+ split -l 1000000 -a 1 'name_of_json' 'output_name_'[m
+[36m@@ -143,7 +163,7 @@[m [mThis will generate a suffix of one letter, starting with a (so output_name_a, ou[m
+ [m
+ ## Environment Variables[m
+ [m
+[31m-The `.env.example` displays an example of all needed variables. In case of the Postgres docker container they can stay the same. Be sure to create an `.env` file with the corresponding variables.[m
+[32m+[m[32mThe `.env.example` displays an example of all needed variables. In case of the Postgres docker container they can stay the same. Be sure to create an `.env` file with the corresponding variables or an `.env.prod` for the docker of the later run app.[m
+ [m
+ ## Run the SQL Setup Scrips[m
+ [m
+[36m@@ -164,7 +184,7 @@[m [mThe execution is similar to above:[m
+ (unbuffer) python clean_and_link.py |& tee -a writelog.txt[m
+ ```[m
+ [m
+[31m-The same goes to the other files. Currently there are `load_additional_stations.py`, `aggregate_cluster_weather.py`, `rename_cities.py` and `sentiment_tips.py` for further data loading / aggregation.[m
+[32m+[m[32mThe same goes to the other files. Currently there are `load_additional_stations.py`, `aggregate_cluster_weather.py`, `rename_cities.py` and `sentiment_tips.py` (in nlp folder) for further data loading / aggregation.[m
+ [m
+ ## Run the SQL optimization Scripts[m
+ [m
+[36m@@ -245,13 +265,13 @@[m [mThe station file is according to this schema:[m
+ [m
+ <br />[m
+ [m
+[31m-# Project Information[m
+[32m+[m[32m# Project App Information[m
+ [m
+ In this section, more detailed information about the project / application is given.[m
+ [m
+ ## Programm Schema[m
+ [m
+[31m-The Application runs on the CentOS VM. There you can find the Postgres DB and the Application running for the user to interact with. The programmer can set the Database properties in the `.env` file, that sensible data like passwords are not exposed anywhere else. An even better way could be using a Docker Container with the appropriate environment variables to get even rid of the .env file locally. The user is served an interface where he can interact with the Database over a GUI which displays for example checkboxes, Dropdowns and Plots:[m
+[32m+[m[32mThe Application runs on the CentOS VM. There you can find the Postgres DB and the Application running for the user to interact with. The programmer can set the Database properties in the `.env` file, so sensible data like passwords are not exposed anywhere else. An even better way could be using a Docker Container with the appropriate environment variables to get even rid of the .env file locally. The user is served an interface where he can interact with the Database over a GUI which displays for example checkboxes, Dropdowns and Plots:[m
+ [m
+ ![ProgramSchema](doc/diagrams/out/ProgramSchema.svg)[m
+ [m
+[36m@@ -263,10 +283,17 @@[m [mThe main application also utilises the DH package to interact with the database.[m
+ [m
+ ![ProgramSchema](doc/diagrams/out/ApiSchema.svg)[m
+ [m
+[32m+[m[32m## Dash App Structure[m
+[32m+[m
+[32m+[m[32mAll the single pages will be linked over the `index.py` file, where the pages and their callbacks (if split up to multiple files) are imported.[m
+[32m+[m[32mWithin the `src` folder, there are the needed modules. The single pages can be either a single file or packed into an own module folder seperated into the view and the callbacks (or even more granular), depending on the code length.[m
+[32m+[m[32mIf the view is seperated into callback and views, it is important to also import the callbacks within the `index.py`.[m
+[32m+[m[32mThe `helper` module contains reoccuring html elements for easy reuse, the `database_handler` module holds all relevant querries and return the appropriate data (mostly pd.DataFrames or single values).[m
+[32m+[m
+ ## Setting up the Dash App[m
+ [m
+ There is a `DOCKERFILE.dash` as well as the `docker-compose.yml` file to set up the dash application anywhere via docker-compose.[m
+[31m-The `.env` file needs to contain the credentials for the database according to the `.env.example` file. Then just run:[m
+[32m+[m[32mThe `.env.prod` file needs to contain the credentials for the database according to the `.env.example` file. Then just run:[m
+ [m
+ ```shell[m
+ docker-compose [-p yourcustomname] up [--build][m
+[36m@@ -275,6 +302,7 @@[m [mdocker-compose [-p yourcustomname] up [--build][m
+ And docker-compose will take care of the container and setting up process. The entrypoint is the `index.py` file.[m
+ The internal docker Port 8050 will get mapped to the VM port 80.[m
+ The -p flag and --build flag are optional and only needed if you run multiple compose files in one project or made crucial changes to the config.[m
+[32m+[m[32mIt is important to note that currently no proxy (like nginx) or ssl certificates are used, since this app was only deployed for iternal showcases and not for production.[m
+ [m
+ ## Ressources for Dash/Plotly/Flask[m
+ [m

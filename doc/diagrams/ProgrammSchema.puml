@@ -1,0 +1,36 @@
+@startuml ProgramSchema
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+
+!include DEVICONS/linux.puml
+!include DEVICONS/python.puml
+!include DEVICONS/postgresql.puml
+!include DEVICONS/aptana.puml
+!include DEVICONS/html5.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/user.puml
+
+skinparam backgroundColor #fff
+
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(c2, " "){
+  Person_Ext(user, "Users", "People that want information", "users")
+  Person(programmer, "Programmer", "Defines the logic", "user")
+  System_Boundary(c1, "CentOS"){
+    Container(config, "Configuration", ".env", "Information for Database connection, secrets ...", "aptana")
+    Container(webapp, "Web App", "Python", "The main interface that the customer interacts with", "html5")
+    Container(api, "API", "Python", "Handles all business logic for the Programm", "python")
+    ContainerDb(db, "Database", "Postgresql", "Holds business and weather data", "postgresql")
+  }
+}
+
+Rel(user, webapp, "Uses", "https")
+Rel_D(programmer, config, "defines")
+Rel(webapp, api, "Uses", "https")
+Rel_R(api, db, "Reads/Writes")
+Rel_R(config, api, "passes")
+
+@enduml
